@@ -7,8 +7,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/joho/godotenv"
-
 	"github.com/vardius/gorouter/v4"
 	"github.com/vardius/gorouter/v4/context"
 )
@@ -43,11 +41,6 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	// apply middleware to all routes
 	// can pass as many as you want
 	router := gorouter.New(logger, example)
@@ -55,6 +48,13 @@ func main() {
 	router.GET("/", http.HandlerFunc(index))
 	router.GET("/hello/{name}", http.HandlerFunc(hello))
 	port := os.Getenv("PORT")
+	log.Printf("port: " + port)
+	if port == "" {
+		port = "8080"
+	}
 	formatedPort := ":" + port
+	log.Printf("formatedPort: " + formatedPort)
+
+
 	log.Fatal(http.ListenAndServe(formatedPort, router))
 }
